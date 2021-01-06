@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.DB;
 using DesignAutomationFramework;
 using System;
 using System.Collections.Generic;
@@ -27,12 +28,27 @@ namespace RevitToIFCBundle
         public void HandleDesignAutomationReadyEvent(object sender, DesignAutomationReadyEventArgs e)
         {
             e.Succeeded = true;
-            DeleteAllWalls(e.DesignAutomationData);
+            ExportToIFC(e.DesignAutomationData);
         }
 
-        public static void DeleteAllWalls(DesignAutomationData data)
+        public static void ExportToIFC(DesignAutomationData data)
         {
-            File.WriteAllLines("output.txt", new string[] { "Hello"});
+
+            if (data == null) throw new ArgumentNullException(nameof(data));
+
+            Document doc = data.RevitDoc;
+            if (doc == null) throw new InvalidOperationException("Could not open document.");
+
+            using (Transaction transaction = new Transaction(doc))
+            {
+                transaction.Start("Export to IFC");
+
+                IFCExportOptions opt = new IFCExportOptions();
+
+                doc.Export(@".\", "output.ifc", opt);
+                transaction.Commit();
+            }
+
             LogTrace("Saving IFC file...");
         }
 
