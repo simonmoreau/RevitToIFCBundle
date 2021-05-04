@@ -32,10 +32,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DesignAutomationBridge, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autodesk.Forge.DesignAutomation.Revit.2021.0.1\lib\net48\DesignAutomationBridge.dll</HintPath>
+      <HintPath>..\packages\Autodesk.Forge.DesignAutomation.Revit.2022.0.0\lib\net48\DesignAutomationBridge.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2021\RevitAPI.dll</HintPath>
+      <HintPath>$(ProgramW6432)\Autodesk\Revit 2022\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -50,9 +50,11 @@
   <ItemGroup>
     <Compile Include="RevitToIFCBundleApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RevitToIFCFailuresProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="PostBuild.ps1" />
     <None Include="RevitToIFCBundle.addin" />
   </ItemGroup>
   <ItemGroup>
@@ -63,18 +65,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-if exist "$(AppData)\Autodesk\REVIT\Addins\2021" (
-  if not exist "$(AppData)\Autodesk\REVIT\Addins\2021\RevitToIFCBundle" (
-    mkdir "$(AppData)\Autodesk\REVIT\Addins\2021\RevitToIFCBundle"
-  )
-  copy "$(ProjectDir)*.addin" "$(AppData)\Autodesk\REVIT\Addins\2021"
-  copy "$(ProjectDir)$(OutputPath)*.dll" "$(AppData)\Autodesk\REVIT\Addins\2021\RevitToIFCBundle"
-)
-
-xcopy /Y /F "$(TargetDir)*.dll" "$(ProjectDir)RevitToIFCBundle.bundle\Contents\RevitToIFCBundle"
-xcopy /Y /F "$(ProjectDir)*.addin" "$(ProjectDir)RevitToIFCBundle.bundle\Contents\"
-
-"C:\Program Files\7-Zip\7z.exe" a -tzip "$(ProjectDir)$(OutputPath)RevitToIFCBundle.zip" "$(ProjectDir)RevitToIFCBundle.bundle\" -xr0!*.pdb</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted $(ProjectDir)PostBuild.ps1 -Configuration $(Configuration) -TargetName $(TargetName) -ProjectDir $(ProjectDir) -TargetPath $(TargetPath) -TargetDir $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>
