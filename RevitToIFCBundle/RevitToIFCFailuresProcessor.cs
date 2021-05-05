@@ -31,6 +31,9 @@ namespace RevitToIFCBundle
                 // the application from entering an infinite loop.
                 resolutionTypeList = failuresAccessor.GetAttemptedResolutionTypes(failure);
 
+                // Log the failure encountered
+                RevitToIFCBundleApp.LogTrace("Default Resolution Caption: " + failure.GetDefaultResolutionCaption());
+
                 if (resolutionTypeList.Count >= MAX_RESOLUTION_ATTEMPTS)
                 {
                     RevitToIFCBundleApp.LogTrace("Failure: Attempted to resolve the failure "
@@ -46,8 +49,9 @@ namespace RevitToIFCBundle
                 {
                     hasError = true;
                     ++errorCount;
+                    RevitToIFCBundleApp.LogTrace("Resolving Failure: Delete Element(s).");
                     failuresAccessor.ResolveFailure(failure);
-                    //RevitToIFCBundleApp.LogTrace("Failure: Unable to continue because of posted errors. Rolling back transaction.");
+                    RevitToIFCBundleApp.LogTrace("Resolved Failure: Delete Element(s).");
                     //return FailureProcessingResult.ProceedWithRollBack;
                 }
 
