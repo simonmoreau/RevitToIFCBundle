@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,14 @@ namespace RevitToIFCBundle
     {
         public ExternalDBApplicationResult OnStartup(Autodesk.Revit.ApplicationServices.ControlledApplication app)
         {
-            string buildDate = Properties.Resources.BuildDate;
+            // Print the running version
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            DateTime buildDate = new DateTime(2000, 1, 1)
+                .AddDays(version.Build)
+                .AddSeconds(version.Revision * 2);
+            RevitToIFCBundleApp.LogTrace(string.Format("Running Version {0} - {1}",version.ToString(),buildDate.ToString()));
+
+
             // Hook up the CustomFailureHandling failure processor.
             RevitToIFCFailuresProcessor revitToIFCFailuresProcessor = new RevitToIFCFailuresProcessor();
             app.FailuresProcessing += revitToIFCFailuresProcessor.FailureProcessor;
