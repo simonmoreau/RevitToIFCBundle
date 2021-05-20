@@ -18,6 +18,7 @@ namespace RevitToIFCBundle
     {
         public ExternalDBApplicationResult OnStartup(Autodesk.Revit.ApplicationServices.ControlledApplication app)
         {
+            string buildDate = Properties.Resources.BuildDate;
             // Hook up the CustomFailureHandling failure processor.
             RevitToIFCFailuresProcessor revitToIFCFailuresProcessor = new RevitToIFCFailuresProcessor();
             app.FailuresProcessing += revitToIFCFailuresProcessor.FailureProcessor;

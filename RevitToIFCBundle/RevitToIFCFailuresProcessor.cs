@@ -17,7 +17,7 @@ namespace RevitToIFCBundle
 
         public void FailureProcessor(object sender, FailuresProcessingEventArgs e)
         {
-            RevitToIFCBundleApp.LogTrace("Enter Failures Processor event.");
+            RevitToIFCBundleApp.LogTrace("Enter FailureProcessor event.");
 
 
             FailuresAccessor failureAccessor = e.GetFailuresAccessor();
@@ -27,6 +27,7 @@ namespace RevitToIFCBundle
 
         private FailureProcessingResult ProcessFailure(FailuresAccessor failureAccessor)
         {
+            RevitToIFCBundleApp.LogTrace("Enter ProcessFailure function - Ligne 30."); 
             bool hasFailure = false;
             IList<FailureResolutionType> resolutionTypeList = new List<FailureResolutionType>();
 
@@ -111,6 +112,8 @@ namespace RevitToIFCBundle
 
         public FailureProcessingResult ProcessFailures(FailuresAccessor failuresAccessor)
         {
+            RevitToIFCBundleApp.LogTrace("Enter ProcessFailures function - Ligne 115.");
+
             IList<FailureMessageAccessor> failList = new List<FailureMessageAccessor>();
             failList = failuresAccessor.GetFailureMessages();
             int errorCount = 0;
@@ -167,10 +170,11 @@ namespace RevitToIFCBundle
                 // FailureProcessingResult.ProceedWithCommit is required
                 if (hasWarning || hasError)
                 {
+                    RevitToIFCBundleApp.LogTrace("ProceedWithCommit : Failure " + errorCount + ": " + " Severity: " + failure.GetSeverity() + " - " + failure.GetDescriptionText());
                     return FailureProcessingResult.ProceedWithCommit;
                 }
 
-                RevitToIFCBundleApp.LogTrace("Failure " + errorCount + ": " + " Severity: " + failure.GetSeverity() + " " + failure.GetDescriptionText());
+                RevitToIFCBundleApp.LogTrace("Failure " + errorCount + ": " + " Severity: " + failure.GetSeverity() + " - " + failure.GetDescriptionText());
             }
 
             // Default: try continuing.
