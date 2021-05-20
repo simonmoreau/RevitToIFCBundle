@@ -62,10 +62,12 @@ namespace RevitToIFCBundle
             if (inputDoc.IsFamilyDocument)
             {
                 projectDocument = LoadFamilyInDocument(rvtApp, inputDoc);
+                RevitToIFCBundleApp.LogTrace("Loaded Family In Document.");
             }
             else
             {
                 projectDocument = inputDoc;
+                RevitToIFCBundleApp.LogTrace("Loaded Project Document.");
             }
 
             if (projectDocument == null) throw new InvalidOperationException("Could not open document.");
@@ -171,6 +173,7 @@ namespace RevitToIFCBundle
 
                 IFCExportOptions opt = new IFCExportOptions();
 
+                RevitToIFCBundleApp.LogTrace("Start IFC conversion.");
                 projectDocument.Export(@".\", "output.ifc", opt);
                 transaction.Commit();
             }
